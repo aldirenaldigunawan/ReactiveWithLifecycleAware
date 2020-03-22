@@ -1,37 +1,52 @@
 package com.example.reactivewithlifecycleaware.presentation.main
 
+import android.util.Log
+import com.example.reactivewithlifecycleaware.presentation.data.DataRepository
 import com.example.reactivewithlifecycleaware.util.CarModel
-import com.example.reactivewithlifecycleaware.util.Data
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.SerialDisposable
+import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class MainPresenter {
+class MainPresenter @Inject constructor(
+    private val repository: DataRepository
+) : MainContract.Presenter {
 
-    private val carModels by lazy { Data.getCarModels() }
     private var layoutType =
         MainContract.LayoutType.Linear
     private lateinit var view: MainContract.View
+    private val serialDisposable = SerialDisposable()
 
-    fun attachView(view: MainContract.View) {
+    override fun attachView(view: MainContract.View) {
         this.view = view
-        loadCarModels()
+        loadUsers()
     }
 
-    fun changeLayout(type: MainContract.LayoutType) {
+    override fun changeLayout(type: MainContract.LayoutType) {
         this.layoutType = type
-        loadCarModels()
+        loadUsers()
     }
 
-    private fun loadCarModels() {
-        when (layoutType) {
-            MainContract.LayoutType.Linear -> {
-                view.renderListView(carModels.mapToLinearViewObject())
-                view.changeListToLinear()
-            }
-            MainContract.LayoutType.Grid -> {
-                view.renderListView(carModels.mapToGridViewObject())
-                view.changeListToGrid()
-            }
-            MainContract.LayoutType.Single -> view.renderSingleView(carModels)
-        }
+    private fun loadUsers() {
+        repository.getData()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                when (layoutType) {
+                    MainContract.LayoutType.Linear -> {
+                        view.renderListView(it.mapToLinearViewObject())
+                        view.changeListToLinear()
+                    }
+                    MainContract.LayoutType.Grid -> {
+                        view.renderListView(it.mapToGridViewObject())
+                        view.changeListToGrid()
+                    }
+                    MainContract.LayoutType.Single -> view.renderSingleView(it)
+                }
+            }, {
+                Log.d("MainActivity", "error fetch : ${it.message}")
+            }).let(serialDisposable::set)
+
     }
 
     private fun List<CarModel>.mapToLinearViewObject(): List<MainContract.ListViewObject.Linear> {
@@ -42,7 +57,7 @@ class MainPresenter {
         return this.map { MainContract.ListViewObject.Grid(it) }
     }
 
-    fun detachView() {
-
+    override fun detachView() {
+        serialDisposable.dispose()
     }
 }

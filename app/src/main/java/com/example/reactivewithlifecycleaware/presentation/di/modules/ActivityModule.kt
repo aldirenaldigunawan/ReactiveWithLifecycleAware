@@ -1,6 +1,7 @@
 package com.example.reactivewithlifecycleaware.presentation.di.modules
 
 import com.example.reactivewithlifecycleaware.presentation.main.MainActivity
+import com.example.reactivewithlifecycleaware.presentation.main.MainActivityModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -11,7 +12,3 @@ abstract class ActivityModule{
     abstract fun mainActivity(): MainActivity
 }
 
-@Module
-class MainActivityModule{
-
-}

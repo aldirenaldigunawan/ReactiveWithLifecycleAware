@@ -10,6 +10,12 @@ interface MainContract {
         fun renderSingleView(carModel: List<CarModel>)
     }
 
+    interface Presenter {
+        fun attachView(view: View)
+        fun detachView()
+        fun changeLayout(type: LayoutType)
+    }
+
     enum class LayoutType {
         Linear, Grid, Single
     }
