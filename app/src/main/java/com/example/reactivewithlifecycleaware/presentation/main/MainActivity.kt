@@ -2,21 +2,29 @@ package com.example.reactivewithlifecycleaware.presentation.main
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.reactivewithlifecycleaware.R
-import com.example.reactivewithlifecycleaware.presentation.main.MainContract.*
+import com.example.reactivewithlifecycleaware.presentation.data.remote.Api
 import com.example.reactivewithlifecycleaware.presentation.main.MainContract.LayoutType.*
+import com.example.reactivewithlifecycleaware.presentation.main.MainContract.ListViewObject
+import com.example.reactivewithlifecycleaware.presentation.main.MainContract.View
 import com.example.reactivewithlifecycleaware.presentation.main.adapter.GridItemDecorator
 import com.example.reactivewithlifecycleaware.presentation.main.adapter.MainAdapter
 import com.example.reactivewithlifecycleaware.util.CarModel
+import dagger.android.support.DaggerAppCompatActivity
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), View {
+class MainActivity : DaggerAppCompatActivity(), View {
+
+    @Inject
+    lateinit var api: Api
 
     private val lifecycleAware: MainLifecycleAware by lazy { MainLifecycleAwareImpl() }
     private val presenter by lazy { MainPresenter() }
@@ -32,6 +40,14 @@ class MainActivity : AppCompatActivity(), View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        api.fetchUsers("octo", 1, 20).subscribeOn(Schedulers.io())
+            .subscribe({
+                Log.d("MainActivity", "data : $it")
+            },{
+                Log.d("MainActivity", "error fetch : ${it.message}")
+            })
+
         lifecycleAware.registerLifecycle(lifecycle)
 
         presenter.attachView(this)

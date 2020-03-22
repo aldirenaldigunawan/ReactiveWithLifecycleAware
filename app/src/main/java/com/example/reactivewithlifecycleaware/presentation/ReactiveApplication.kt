@@ -18,7 +18,6 @@ class ReactiveApplication : DaggerApplication() {
 
     override fun onCreate() {
         super.onCreate()
-
         Log.d("ReactiveApplication", appDatabase.getSomeDao().getString())
     }
 }
