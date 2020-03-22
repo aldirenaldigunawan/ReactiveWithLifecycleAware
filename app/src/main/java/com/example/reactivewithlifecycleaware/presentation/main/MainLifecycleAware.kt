@@ -1,4 +1,4 @@
-package com.example.reactivewithlifecycleaware
+package com.example.reactivewithlifecycleaware.presentation.main
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -15,7 +15,8 @@ interface MainLifecycleAware : LifecycleObserver {
     }
 }
 
-class MainLifecycleAwareImpl : MainLifecycleAware {
+class MainLifecycleAwareImpl :
+    MainLifecycleAware {
     private lateinit var lifecycle: Lifecycle
     private val watchers = mutableListOf<MainLifecycleAware.Watcher>()
 

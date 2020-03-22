@@ -1,4 +1,4 @@
-package com.example.reactivewithlifecycleaware
+package com.example.reactivewithlifecycleaware.util
 
 import android.content.Context
 import android.util.DisplayMetrics

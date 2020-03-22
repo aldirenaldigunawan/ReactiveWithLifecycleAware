@@ -1,4 +1,4 @@
-package com.example.reactivewithlifecycleaware
+package com.example.reactivewithlifecycleaware.util
 
 import com.google.gson.Gson
 
@@ -108,7 +108,8 @@ object Data {
     """.trimIndent()
 
     fun getCarModels(): List<CarModel> {
-        return Gson().fromJson<CarResponse>(modelsRawJson, CarResponse::class.java).model
+        return Gson().fromJson<CarResponse>(
+            modelsRawJson, CarResponse::class.java).model
     }
 
 }

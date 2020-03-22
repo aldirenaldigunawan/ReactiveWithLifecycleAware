@@ -1,9 +1,9 @@
-package com.example.reactivewithlifecycleaware
+package com.example.reactivewithlifecycleaware.presentation.main.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
-import coil.transform.RoundedCornersTransformation
+import com.example.reactivewithlifecycleaware.util.CarModel
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.layout_grid_car_model.*
 

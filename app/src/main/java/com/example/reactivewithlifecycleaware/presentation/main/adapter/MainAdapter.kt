@@ -1,9 +1,11 @@
-package com.example.reactivewithlifecycleaware
+package com.example.reactivewithlifecycleaware.presentation.main.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.reactivewithlifecycleaware.R
+import com.example.reactivewithlifecycleaware.presentation.main.MainContract
 import java.lang.IllegalStateException
 
 class MainAdapter : ListAdapter<MainContract.ListViewObject, RecyclerView.ViewHolder>(

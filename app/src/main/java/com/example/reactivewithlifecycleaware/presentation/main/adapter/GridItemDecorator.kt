@@ -1,4 +1,4 @@
-package com.example.reactivewithlifecycleaware
+package com.example.reactivewithlifecycleaware.presentation.main.adapter
 
 import android.graphics.Rect
 import android.view.View

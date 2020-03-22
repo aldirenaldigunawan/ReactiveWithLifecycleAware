@@ -1,4 +1,4 @@
-package com.example.reactivewithlifecycleaware
+package com.example.reactivewithlifecycleaware.presentation.main
 
 import android.content.Context
 import android.content.Intent
@@ -8,10 +8,12 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.reactivewithlifecycleaware.Data.getCarModels
-import com.example.reactivewithlifecycleaware.MainContract.*
-import com.example.reactivewithlifecycleaware.MainContract.LayoutType.*
+import com.example.reactivewithlifecycleaware.R
+import com.example.reactivewithlifecycleaware.presentation.main.MainContract.*
+import com.example.reactivewithlifecycleaware.presentation.main.MainContract.LayoutType.*
+import com.example.reactivewithlifecycleaware.presentation.main.adapter.GridItemDecorator
+import com.example.reactivewithlifecycleaware.presentation.main.adapter.MainAdapter
+import com.example.reactivewithlifecycleaware.util.CarModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View {
@@ -19,7 +21,13 @@ class MainActivity : AppCompatActivity(), View {
     private val lifecycleAware: MainLifecycleAware by lazy { MainLifecycleAwareImpl() }
     private val presenter by lazy { MainPresenter() }
     private val adapter by lazy { MainAdapter() }
-    private val itemDecorator by lazy { GridItemDecorator(24, 2, true) }
+    private val itemDecorator by lazy {
+        GridItemDecorator(
+            24,
+            2,
+            true
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,66 +84,5 @@ class MainActivity : AppCompatActivity(), View {
         fun createIntent(context: Context): Intent {
             return Intent(context, MainActivity::class.java)
         }
-    }
-}
-
-interface MainContract {
-    interface View {
-        fun renderListView(carModel: List<ListViewObject>)
-        fun changeListToLinear()
-        fun changeListToGrid()
-        fun renderSingleView(carModel: List<CarModel>)
-    }
-
-    enum class LayoutType {
-        Linear, Grid, Single
-    }
-
-    sealed class ListViewObject(open val carModel: CarModel) {
-        data class Linear(override val carModel: CarModel) : ListViewObject(carModel)
-        data class Grid(override val carModel: CarModel) : ListViewObject(carModel)
-    }
-}
-
-class MainPresenter {
-
-    private val carModels by lazy { getCarModels() }
-    private var layoutType = Linear
-    private lateinit var view: View
-
-    fun attachView(view: View) {
-        this.view = view
-        loadCarModels()
-    }
-
-    fun changeLayout(type: LayoutType) {
-        this.layoutType = type
-        loadCarModels()
-    }
-
-    private fun loadCarModels() {
-        when (layoutType) {
-            Linear -> {
-                view.renderListView(carModels.mapToLinearViewObject())
-                view.changeListToLinear()
-            }
-            Grid -> {
-                view.renderListView(carModels.mapToGridViewObject())
-                view.changeListToGrid()
-            }
-            Single -> view.renderSingleView(carModels)
-        }
-    }
-
-    private fun List<CarModel>.mapToLinearViewObject(): List<ListViewObject.Linear> {
-        return this.map { ListViewObject.Linear(it) }
-    }
-
-    private fun List<CarModel>.mapToGridViewObject(): List<ListViewObject.Grid> {
-        return this.map { ListViewObject.Grid(it) }
-    }
-
-    fun detachView() {
-
     }
 }
